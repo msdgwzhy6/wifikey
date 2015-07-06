@@ -2,35 +2,45 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     >
     <LinearLayout
         android:orientation="vertical"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/radio"
+        android:layout_above="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linear">
 
     </LinearLayout>
 
-    <RadioGroup
-        android:id="@+id/radio"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RadioButton
-            android:layout_width="wrap_content"
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentBottom="true"
+       android:id="@+id/bottom">
+
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/button_wifi"
-            android:text="f1"/>
-        <RadioButton
-            android:layout_width="wrap_content"
+            android:text="wifi"/>
+       <Button
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:id="@+id/button_news"
+           android:text="资讯"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/button_about"
-            android:text="f2"/>
-    </RadioGroup>
+            android:text="关于"/>
 
 
+
+</LinearLayout>
 </RelativeLayout>

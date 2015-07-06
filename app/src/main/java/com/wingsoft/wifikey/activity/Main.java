@@ -9,12 +9,16 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
 import com.wingsoft.wifikey.R;
+import com.wingsoft.wifikey.db.WifiDB;
 import com.wingsoft.wifikey.fragment.AboutFragment;
+import com.wingsoft.wifikey.fragment.NewsFragment;
 import com.wingsoft.wifikey.fragment.WifiFragment;
+import com.wingsoft.wifikey.model.Wifi;
 
 public class Main extends ActionBarActivity implements View.OnClickListener {
     private LinearLayout fragmentLayout;
@@ -22,18 +26,20 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private FragmentTransaction transaction;
     private WifiFragment fragment_Wifi = new WifiFragment();
     private AboutFragment fragment_About = new AboutFragment();
-    private RadioButton buttonWifi,buttonAbout;
+    private NewsFragment fragment_News = new NewsFragment();
+    private Button buttonWifi,buttonAbout,buttonNews;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentLayout = (LinearLayout)findViewById(R.id.linear);
         changeFragment(fragment_Wifi);
-        buttonAbout = (RadioButton)findViewById(R.id.button_about);
-        buttonWifi = (RadioButton)findViewById(R.id.button_wifi);
+        buttonAbout = (Button)findViewById(R.id.button_about);
+        buttonWifi = (Button)findViewById(R.id.button_wifi);
+        buttonNews = (Button)findViewById(R.id.button_news);
         buttonAbout.setOnClickListener(this);
         buttonWifi.setOnClickListener(this);
-
+        buttonNews.setOnClickListener(this);
 
     }
 
@@ -50,11 +56,12 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         switch (view.getId()){
             case R.id.button_wifi:
                 changeFragment(fragment_Wifi);
-
                 break;
             case R.id.button_about:
                 changeFragment(fragment_About);
                 break;
+            case R.id.button_news:
+                changeFragment(fragment_News);
         }
     }
 }

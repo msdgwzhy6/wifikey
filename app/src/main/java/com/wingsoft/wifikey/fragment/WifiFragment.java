@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.adapter.WifiAdapter;
+import com.wingsoft.wifikey.db.WifiDB;
 import com.wingsoft.wifikey.model.Wifi;
 
 import java.util.ArrayList;
@@ -31,15 +32,9 @@ public class WifiFragment extends Fragment {
         return view;
     }
     private List  getList(){
-        List list = new ArrayList<Wifi>();
-        Wifi wifi = new Wifi();
-        wifi.setSsid("7daysinn");
-        wifi.setKey("12345678");
-        list.add(wifi);
-        list.add(wifi);
-        list.add(wifi);
-        list.add(wifi);
-        list.add(wifi);
+        List list;
+        WifiDB wifiDB = WifiDB.getWifiDB(getActivity());
+        list = wifiDB.fetchAllData();
         return list;
     }
 
