@@ -12,6 +12,7 @@ import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.adapter.WifiAdapter;
 import com.wingsoft.wifikey.db.WifiDB;
 import com.wingsoft.wifikey.model.Wifi;
+import com.wingsoft.wifikey.util.ImportUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,21 +22,24 @@ import java.util.List;
  */
 public class WifiFragment extends Fragment {
     private ListView listView;
+    WifiAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_wifi,container,false);
         listView = (ListView)view.findViewById(R.id.listview);
-        List list = new ArrayList<Wifi>();
+        List list;
         list = getList();
-        WifiAdapter adapter = new WifiAdapter(getActivity(),R.layout.listwifi,list);
+        adapter = new WifiAdapter(getActivity(),R.layout.listwifi,list);
         listView.setAdapter(adapter);
         return view;
     }
     private List  getList(){
-        List list;
-        WifiDB wifiDB = WifiDB.getWifiDB(getActivity());
-        list = wifiDB.fetchAllData();
+        List list = null;
+        list = WifiDB.getWifiDB(getActivity()).fetchAllData();
         return list;
+    }
+    public void listChange(){
+        adapter.notifyDataSetChanged();
     }
 
 }

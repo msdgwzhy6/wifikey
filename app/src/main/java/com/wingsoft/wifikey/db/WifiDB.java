@@ -39,6 +39,13 @@ public class WifiDB {
             db.insert("Wifi",null,cv);
         }
     }
+
+    public void insertAll(ArrayList<Wifi>list){
+        for (int i = 0;i<list.size();i++){
+            insert(list.get(i));
+        }
+
+    }
     public ArrayList<Wifi> fetchAllData(){
         ArrayList<Wifi>list = new ArrayList<Wifi>();
         Cursor cursor = db.rawQuery("select * from " + DB_NAME, null);

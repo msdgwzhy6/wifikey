@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class WifikeyOpenHelper extends SQLiteOpenHelper {
     public static final String CREATE ="create table Wifi("
                                         +"id integer primary key autoincrement,"
-                                        +"ssid text,"
+                                        +"ssid text unique,"
                                         +"key text,"
                                         +"comment text)";
     public WifikeyOpenHelper(Context context, String name,int version) {

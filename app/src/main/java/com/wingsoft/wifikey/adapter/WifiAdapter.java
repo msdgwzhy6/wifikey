@@ -30,7 +30,7 @@ public class WifiAdapter extends ArrayAdapter<Wifi> {
         if(container==null){
             view = LayoutInflater.from(getContext()).inflate(resourceId,null);
             viewHolder = new ViewHolder();
-            viewHolder.textSsid = (TextView)view.findViewById(R.id.text_key);
+            viewHolder.textSsid = (TextView)view.findViewById(R.id.text_ssid);
             viewHolder.textKey = (TextView)view.findViewById(R.id.text_key);
             viewHolder.textComment = (TextView)view.findViewById(R.id.text_comment);
             viewHolder.image = (ImageView)view.findViewById(R.id.image);
