@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
@@ -18,6 +19,9 @@ import com.wingsoft.wifikey.fragment.NewsFragment;
 import com.wingsoft.wifikey.fragment.WifiFragment;
 import com.wingsoft.wifikey.thread.ImportThread;
 import com.wingsoft.wifikey.util.ImportUtils;
+import com.wingsoft.wifikey.util.MyDialog;
+import android.os.Handler;
+import android.widget.Toast;
 
 public class Main extends ActionBarActivity implements View.OnClickListener {
     private LinearLayout fragmentLayout;
@@ -27,6 +31,17 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private AboutFragment fragment_About = new AboutFragment();
     private NewsFragment fragment_News = new NewsFragment();
     private Button buttonWifi,buttonAbout,buttonNews,buttonMenu;
+    private Handler _handler = new Handler() {
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case 0x01:
+                    fragment_Wifi.change(Main.this);
+                    Toast.makeText(Main.this,"fragment_Wifi数据变更"+msg.what,Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +58,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         buttonMenu.setOnClickListener(this);
     }
 
-    private void changeFragment(Fragment f){
+    public void changeFragment(Fragment f){
         fragmentManager = getFragmentManager();
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.linear,f);
@@ -67,9 +82,15 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                 changeFragment(fragment_News);
                 break;
             case R.id.button_menu:
-                ImportThread t = new ImportThread(this);
-                t.start();
+
+                MyDialog.getDialog(Main.this);
                 break;
         }
+
+
     }
+    public AboutFragment getFragmentAbout(){
+        return fragment_About;
+    }
+
 }

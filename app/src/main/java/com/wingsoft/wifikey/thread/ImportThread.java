@@ -1,7 +1,11 @@
 package com.wingsoft.wifikey.thread;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 
+import com.wingsoft.wifikey.activity.Main;
+import com.wingsoft.wifikey.fragment.WifiFragment;
 import com.wingsoft.wifikey.util.ImportUtils;
 
 /**
@@ -9,6 +13,7 @@ import com.wingsoft.wifikey.util.ImportUtils;
  */
 public class ImportThread extends Thread {
     private Context _context;
+    private Handler _handler;
     public ImportThread(Context context){
         _context = context;
     }

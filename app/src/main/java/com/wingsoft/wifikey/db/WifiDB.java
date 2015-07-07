@@ -30,6 +30,11 @@ public class WifiDB {
         }
         return wifiDB;
     }
+    public void delete(Wifi wifi){
+        if(wifi!=null){
+            db.execSQL("delete from Wifi where Ssid ='"+wifi.getSsid()+"'");
+        }
+    }
     public void insert(Wifi wifi){
         if(wifi!=null){
             ContentValues cv = new ContentValues();
