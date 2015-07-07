@@ -44,7 +44,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private WifiFragment _fragment_Wifi2 = new WifiFragment();
     private AboutFragment fragment_About = new AboutFragment();
     private NewsFragment fragment_News = new NewsFragment();
-    private Button buttonWifi,buttonAbout,buttonNews,buttonMenu;
+    private Button buttonWifi,buttonAbout,buttonNews;
     private SlidingMenu menu;
     private static boolean isFragment1=false;
 
@@ -69,11 +69,11 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         buttonAbout = (Button)findViewById(R.id.button_about);
         buttonWifi = (Button)findViewById(R.id.button_wifi);
         buttonNews = (Button)findViewById(R.id.button_news);
-        buttonMenu = (Button)findViewById(R.id.button_menu);
+
         buttonAbout.setOnClickListener(this);
         buttonWifi.setOnClickListener(this);
         buttonNews.setOnClickListener(this);
-        buttonMenu.setOnClickListener(this);
+
         initMenu();
 
 
@@ -101,10 +101,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             case R.id.button_news:
 
                 changeFragment(fragment_News);
-                break;
-            case R.id.button_menu:
-
-                MyDialog.getDialog(Main.this);
                 break;
         }
 

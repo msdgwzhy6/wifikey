@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wifikey</string>
+    <string name="app_name">wifi密码读取器</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
