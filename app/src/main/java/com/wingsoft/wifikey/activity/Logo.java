@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wingsoft.wifikey.R;
 
 public class Logo extends ActionBarActivity {
@@ -26,7 +27,10 @@ public class Logo extends ActionBarActivity {
             }
         });
 
+
     }
+
+
 
 
 }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.fragment.AboutFragment;
 import com.wingsoft.wifikey.fragment.NewsFragment;
@@ -60,6 +61,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         buttonWifi.setOnClickListener(this);
         buttonNews.setOnClickListener(this);
         buttonMenu.setOnClickListener(this);
+        initMenu();
+
+
     }
 
     public void changeFragment(Fragment f){
@@ -111,5 +115,18 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             changeFragment(_fragment_Wifi2);
             isFragment1 = true;
         }
+
+    }
+    private void initMenu(){
+        SlidingMenu menu = new SlidingMenu(this);
+        menu.setMode(SlidingMenu.LEFT);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        menu.setShadowWidthRes(R.dimen.shadow_width);
+        menu.setShadowDrawable(R.drawable.shadow);
+        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        menu.setFadeDegree(0.35f);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        //为侧滑菜单设置布局
+        menu.setMenu(R.layout.slidingmenu);
     }
 }

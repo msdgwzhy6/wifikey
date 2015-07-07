@@ -72,17 +72,7 @@ public class MyDialog {
                                             Toast.makeText(context, "当前没有连接wifi", Toast.LENGTH_SHORT).show();
 
                                     case 3:
-                                        final EditText inputServer = new EditText(context);
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                        builder.setTitle("Server").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer)
-                                                .setNegativeButton("Cancel", null);
-                                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                inputServer.getText().toString();
-                                            }
-                                        });
-                                        builder.show();
                                         return;
                                 }
 
