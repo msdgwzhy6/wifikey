@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.wingsoft.wifikey.activity.Main;
@@ -37,24 +38,34 @@ public class ItemDialog {
                                             @Override
                                             public void run() {
                                                 WifiDB.getWifiDB(context).delete(wifi);
+                                                Main main = (Main) context;
+                                                main.reFresh();
                                             }
                                         }).start();
-                                        Main main = (Main)context;
-                                        main.reFresh();
+
 
                                         break;
                                     case 1:
-                                        final Wifi wifi = (Wifi)WifiFragment.get_list().get(i);
-                                        wifi.setComment("测试备注，从这里接收");
-                                        new Thread(new Runnable() {
+                                        final Wifi wifi = (Wifi) WifiFragment.get_list().get(i);
+                                        final EditText et = new EditText(context);
+                                        new AlertDialog.Builder(context).setTitle("请输入备注")
+                                                .setView(et).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                             @Override
-                                            public void run() {
-                                                WifiDB.getWifiDB(context).comment(wifi);
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                wifi.setComment(et.getText().toString());
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        WifiDB.getWifiDB(context).comment(wifi);
+                                                        Main main = (Main) context;
+                                                        main.reFresh();
+                                                    }
+                                                }).start();
                                             }
-                                        }).start();
+                                        }).show();
 
-                                        main = (Main)context;
-                                        main.reFresh();
+
+
 
                                         break;
                                     case 2:

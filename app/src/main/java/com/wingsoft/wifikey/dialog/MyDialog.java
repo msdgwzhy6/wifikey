@@ -1,23 +1,21 @@
 package com.wingsoft.wifikey.dialog;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
-import android.os.Handler;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.activity.Main;
 import com.wingsoft.wifikey.db.WifiDB;
 import com.wingsoft.wifikey.model.Wifi;
 import com.wingsoft.wifikey.thread.ImportThread;
-import com.wingsoft.wifikey.util.ImportUtils;
 import com.wingsoft.wifikey.util.NetworkUtils;
 
-import java.util.Dictionary;
 
 /**
  * Created by wing on 15/7/6.
@@ -42,16 +40,29 @@ public class MyDialog {
                                         break;
                                     case 1:
                                         final Wifi wifi = new Wifi();
-                                        wifi.setKey("从这里录入");
-                                        wifi.setSsid("test insert");
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                WifiDB.getWifiDB(context).insert(wifi);
-                                            }
-                                        }).start();
-                                        Main main = (Main) context;
-                                        main.reFresh();
+
+                                        final View view = LayoutInflater.from(context).inflate(R.layout.dialog_add,null);
+                                        new AlertDialog.Builder(context).setTitle("请输入信息").setView(view)
+                                                .setPositiveButton("确认",new DialogInterface.OnClickListener() {
+
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        EditText ssid = (EditText)view.findViewById(R.id.edit_ssid);
+                                                        EditText key = (EditText)view.findViewById(R.id.edit_key);
+                                                        wifi.setSsid(ssid.getText().toString());
+                                                        wifi.setKey(key.getText().toString());
+                                                        new Thread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                WifiDB.getWifiDB(context).insert(wifi);
+                                                                Main main = (Main) context;
+                                                                main.reFresh();
+                                                            }
+                                                        }).start();
+                                                    }
+                                                }).show();
+
+
                                         break;
                                     case 2:
                                         if (NetworkUtils.isWifi(context)) {
@@ -61,6 +72,17 @@ public class MyDialog {
                                             Toast.makeText(context, "当前没有连接wifi", Toast.LENGTH_SHORT).show();
 
                                     case 3:
+                                        final EditText inputServer = new EditText(context);
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        builder.setTitle("Server").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer)
+                                                .setNegativeButton("Cancel", null);
+                                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                inputServer.getText().toString();
+                                            }
+                                        });
+                                        builder.show();
                                         return;
                                 }
 
