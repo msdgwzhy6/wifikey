@@ -1,4 +1,4 @@
-package com.wingsoft.wifikey.util;
+package com.wingsoft.wifikey.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,7 +21,7 @@ import java.util.Dictionary;
  * Created by wing on 15/7/6.
  */
 public class ItemDialog {
-    public static void getDialog(final Context context,final Wifi wifi, final AboutFragment fragment){
+    public static void getDialog(final Context context,final Wifi wifi, final AboutFragment fragment,final int i){
         String[] list = { "删除", "备注", "取消" };
         new AlertDialog.Builder(context)
                 .setTitle("请选择")
@@ -40,11 +40,22 @@ public class ItemDialog {
                                             }
                                         }).start();
                                         Main main = (Main)context;
-                                        main.changeFragment(fragment);
+                                        main.reFresh();
 
                                         break;
                                     case 1:
-                                        Toast.makeText(context,"待开发",Toast.LENGTH_SHORT).show();
+                                        final Wifi wifi = (Wifi)WifiFragment.get_list().get(i);
+                                        wifi.setComment("测试备注，从这里接收");
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                WifiDB.getWifiDB(context).comment(wifi);
+                                            }
+                                        }).start();
+
+                                        main = (Main)context;
+                                        main.reFresh();
+
                                         break;
                                     case 2:
                                         return;

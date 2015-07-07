@@ -1,5 +1,6 @@
 package com.wingsoft.wifikey.activity;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -17,9 +18,9 @@ import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.fragment.AboutFragment;
 import com.wingsoft.wifikey.fragment.NewsFragment;
 import com.wingsoft.wifikey.fragment.WifiFragment;
-import com.wingsoft.wifikey.thread.ImportThread;
-import com.wingsoft.wifikey.util.ImportUtils;
-import com.wingsoft.wifikey.util.MyDialog;
+import com.wingsoft.wifikey.dialog.MyDialog;
+import com.wingsoft.wifikey.model.Wifi;
+
 import android.os.Handler;
 import android.widget.Toast;
 
@@ -28,16 +29,19 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
     private WifiFragment fragment_Wifi = new WifiFragment();
+    private WifiFragment _fragment_Wifi2 = new WifiFragment();
     private AboutFragment fragment_About = new AboutFragment();
     private NewsFragment fragment_News = new NewsFragment();
     private Button buttonWifi,buttonAbout,buttonNews,buttonMenu;
+    private static boolean isFragment1=false;
     private Handler _handler = new Handler() {
         public void handleMessage(Message msg){
             switch (msg.what){
-                case 0x01:
-                    fragment_Wifi.change(Main.this);
-                    Toast.makeText(Main.this,"fragment_Wifi数据变更"+msg.what,Toast.LENGTH_SHORT).show();
-            }
+                case 0x11:
+                        Wifi wifi =(Wifi)msg.obj;
+                        new AlertDialog.Builder(Main.this).setTitle("当前密码"+wifi.getKey()).show();
+                        Toast.makeText(Main.this,wifi.getKey(),Toast.LENGTH_SHORT).show();
+                     }
 
 
         }
@@ -92,5 +96,20 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     public AboutFragment getFragmentAbout(){
         return fragment_About;
     }
+    public Handler get_handler(){
+        return _handler;
+    }
 
+    public WifiFragment get_fragment_Wifi2(){
+        return _fragment_Wifi2;
+    }
+    public  void reFresh(){
+        if(isFragment1){
+            changeFragment(fragment_Wifi);
+            isFragment1 = false;
+        }else{
+            changeFragment(_fragment_Wifi2);
+            isFragment1 = true;
+        }
+    }
 }

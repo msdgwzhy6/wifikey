@@ -30,9 +30,18 @@ public class WifiDB {
         }
         return wifiDB;
     }
+    public Wifi select(Wifi wifi){
+        Cursor c =db.rawQuery("select * from Wifi where ssid ='" + wifi.getSsid() + "'", null);
+        c.moveToFirst();
+        Wifi mWifi = new Wifi();
+        wifi.setComment(c.getString(c.getColumnIndex("comment")));
+        wifi.setKey(c.getString(c.getColumnIndex("key")));
+        wifi.setSsid(c.getString(c.getColumnIndex("ssid")));
+        return wifi;
+    }
     public void delete(Wifi wifi){
         if(wifi!=null){
-            db.execSQL("delete from Wifi where Ssid ='"+wifi.getSsid()+"'");
+            db.execSQL("delete from Wifi where ssid ='"+wifi.getSsid()+"'");
         }
     }
     public void insert(Wifi wifi){
@@ -49,6 +58,10 @@ public class WifiDB {
         for (int i = 0;i<list.size();i++){
             insert(list.get(i));
         }
+
+    }
+    public void comment(Wifi wifi){
+        db.execSQL("update Wifi set comment = '"+wifi.getComment()+"' "+"where ssid ='"+wifi.getSsid()+"'");
 
     }
     public ArrayList<Wifi> fetchAllData(){

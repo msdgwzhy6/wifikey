@@ -24,6 +24,8 @@ public class ImportThread extends Thread {
             public void run() {
                 try {
                     ImportUtils.importWifi(_context);
+                    Main main = (Main) _context;
+                    main.reFresh();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
