@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="list">
+        <item>一键导入</item>
+        <item>手动添加</item>
+        <item>查看当前wifi密码</item>
+        <item>关于</item>
+        <item>退出</item>
+    </string-array>
+</resources>

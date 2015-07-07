@@ -5,24 +5,33 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
+import android.content.DialogInterface;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wingsoft.wifikey.R;
+import com.wingsoft.wifikey.db.WifiDB;
 import com.wingsoft.wifikey.fragment.AboutFragment;
 import com.wingsoft.wifikey.fragment.NewsFragment;
 import com.wingsoft.wifikey.fragment.WifiFragment;
 import com.wingsoft.wifikey.dialog.MyDialog;
 import com.wingsoft.wifikey.model.Wifi;
+import com.wingsoft.wifikey.thread.ImportThread;
+import com.wingsoft.wifikey.util.ImportUtils;
 
 import android.os.Handler;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class Main extends ActionBarActivity implements View.OnClickListener {
@@ -118,7 +127,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     }
     private void initMenu(){
-        SlidingMenu menu = new SlidingMenu(this);
+        String[] list = getResources().getStringArray(R.array.list);
+       final SlidingMenu menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         menu.setShadowWidthRes(R.dimen.shadow_width);
@@ -128,5 +138,38 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         //为侧滑菜单设置布局
         menu.setMenu(R.layout.slidingmenu);
+        menu.toggle();
+        ListView lv = (ListView)menu.findViewById(R.id.list_silding);
+        ArrayAdapter<String>adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0:
+
+                        ImportThread thread = new ImportThread(Main.this);
+                        menu.toggle();
+                        thread.start();
+                        break;
+                    case 1:
+                        ImportUtils.add(Main.this);
+                        menu.toggle();
+                        Toast.makeText(Main.this,"手动添加",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        ImportUtils.getNow(Main.this);
+                        menu.toggle();
+                        break;
+                    case 3:
+                        changeFragment(fragment_About);
+                        menu.toggle();
+                        break;
+                    case 4:
+                        finish();
+                        break;
+                }
+            }
+        });
     }
 }

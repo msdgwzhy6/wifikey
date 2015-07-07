@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/background_floating_material_dark">
-<TextView
+<ListView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textColor="@color/link_text_material_light"
-    android:text="menu"
-    android:textSize="50sp"/>
+    android:background="#d9d9d9"
+    android:id="@+id/list_silding">
+</ListView>
 </LinearLayout>
