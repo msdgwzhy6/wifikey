@@ -24,8 +24,7 @@
 
         <activity
             android:name=".activity.Main"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:label="@string/title_activity_main" >
+            android:label="wifi密码读取器" >
         </activity>
     </application>
 

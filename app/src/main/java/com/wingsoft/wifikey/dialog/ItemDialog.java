@@ -25,7 +25,7 @@ public class ItemDialog {
     public static void getDialog(final Context context,final Wifi wifi, final AboutFragment fragment,final int i){
         String[] list = { "删除", "备注", "取消" };
         new AlertDialog.Builder(context)
-                .setTitle("请选择")
+
                 .setItems(list,
                         new DialogInterface.OnClickListener() {
 
