@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,6 +36,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class Main extends ActionBarActivity implements View.OnClickListener {
+    private long _exitTime = 0;
     private LinearLayout fragmentLayout;
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
@@ -43,7 +45,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private AboutFragment fragment_About = new AboutFragment();
     private NewsFragment fragment_News = new NewsFragment();
     private Button buttonWifi,buttonAbout,buttonNews,buttonMenu;
+    private SlidingMenu menu;
     private static boolean isFragment1=false;
+
     private Handler _handler = new Handler() {
         public void handleMessage(Message msg){
             switch (msg.what){
@@ -128,7 +132,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     }
     private void initMenu(){
         String[] list = getResources().getStringArray(R.array.list);
-       final SlidingMenu menu = new SlidingMenu(this);
+        menu= new SlidingMenu(this);
         menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         menu.setShadowWidthRes(R.dimen.shadow_width);
@@ -171,5 +175,23 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK)
+            exit();
+        return false;
+    }
+    public void exit() {
+        if ((System.currentTimeMillis() - _exitTime) > 2000) {
+            Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                    Toast.LENGTH_SHORT).show();
+            menu.toggle();
+            _exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+
+        }
     }
 }
