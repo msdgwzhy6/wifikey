@@ -5,28 +5,24 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
-import android.content.DialogInterface;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wingsoft.wifikey.R;
-import com.wingsoft.wifikey.db.WifiDB;
 import com.wingsoft.wifikey.fragment.AboutFragment;
+import com.wingsoft.wifikey.fragment.HelpFragment;
 import com.wingsoft.wifikey.fragment.NewsFragment;
 import com.wingsoft.wifikey.fragment.WifiFragment;
-import com.wingsoft.wifikey.dialog.MyDialog;
 import com.wingsoft.wifikey.model.Wifi;
 import com.wingsoft.wifikey.thread.ImportThread;
 import com.wingsoft.wifikey.util.ImportUtils;
@@ -40,37 +36,39 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private LinearLayout fragmentLayout;
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
+    private HelpFragment mHelpFragment = new HelpFragment();
     private WifiFragment fragment_Wifi = new WifiFragment();
     private WifiFragment _fragment_Wifi2 = new WifiFragment();
     private AboutFragment fragment_About = new AboutFragment();
     private NewsFragment fragment_News = new NewsFragment();
-    private Button buttonWifi,buttonAbout,buttonNews;
+    private Button buttonWifi, buttonNews;
     private SlidingMenu menu;
-    private static boolean isFragment1=false;
+    private static boolean isFragment1 = false;
 
     private Handler _handler = new Handler() {
-        public void handleMessage(Message msg){
-            switch (msg.what){
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
                 case 0x11:
-                        Wifi wifi =(Wifi)msg.obj;
-                        new AlertDialog.Builder(Main.this).setTitle("当前密码"+wifi.getKey()).show();
-                        Toast.makeText(Main.this,wifi.getKey(),Toast.LENGTH_SHORT).show();
-                     }
+                    Wifi wifi = (Wifi) msg.obj;
+                    new AlertDialog.Builder(Main.this).setTitle("当前密码" + wifi.getKey()).setNegativeButton("确定", null).show();
+                    break;
+                case 0x111:
+                    Toast.makeText(Main.this,"导入失败,请检查root权限",Toast.LENGTH_SHORT).show();
+            }
 
 
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fragmentLayout = (LinearLayout)findViewById(R.id.linear);
+        fragmentLayout = (LinearLayout) findViewById(R.id.linear);
         changeFragment(fragment_Wifi);
-        buttonAbout = (Button)findViewById(R.id.button_about);
-        buttonWifi = (Button)findViewById(R.id.button_wifi);
-        buttonNews = (Button)findViewById(R.id.button_news);
+        buttonWifi = (Button) findViewById(R.id.button_wifi);
+        buttonNews = (Button) findViewById(R.id.button_news);
 
-        buttonAbout.setOnClickListener(this);
         buttonWifi.setOnClickListener(this);
         buttonNews.setOnClickListener(this);
 
@@ -79,25 +77,23 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     }
 
-    public void changeFragment(Fragment f){
+    public void changeFragment(Fragment f) {
         fragmentManager = getFragmentManager();
         transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.linear,f);
+        transaction.replace(R.id.linear, f);
         transaction.commit();
-        Log.i("MainActivity","fragment changed");
+        Log.i("MainActivity", "fragment changed");
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.button_wifi:
                 changeFragment(fragment_Wifi);
 
 
                 break;
-            case R.id.button_about:
-                changeFragment(fragment_About);
-                break;
+
             case R.id.button_news:
 
                 changeFragment(fragment_News);
@@ -106,29 +102,33 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
 
     }
-    public AboutFragment getFragmentAbout(){
+
+    public AboutFragment getFragmentAbout() {
         return fragment_About;
     }
-    public Handler get_handler(){
+
+    public Handler get_handler() {
         return _handler;
     }
 
-    public WifiFragment get_fragment_Wifi2(){
-        return _fragment_Wifi2;
-    }
-    public  void reFresh(){
-        if(isFragment1){
+//    public WifiFragment get_fragment_Wifi2() {
+//        return _fragment_Wifi2;
+//    }
+
+    public void reFresh() {
+        if (isFragment1) {
             changeFragment(fragment_Wifi);
             isFragment1 = false;
-        }else{
+        } else {
             changeFragment(_fragment_Wifi2);
             isFragment1 = true;
         }
 
     }
-    private void initMenu(){
+
+    private void initMenu() {
         String[] list = getResources().getStringArray(R.array.list);
-        menu= new SlidingMenu(this);
+        menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         menu.setShadowWidthRes(R.dimen.shadow_width);
@@ -139,23 +139,22 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         //为侧滑菜单设置布局
         menu.setMenu(R.layout.slidingmenu);
         menu.toggle();
-        ListView lv = (ListView)menu.findViewById(R.id.list_silding);
-        ArrayAdapter<String>adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list);
+        ListView lv = (ListView) menu.findViewById(R.id.list_silding);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
+                switch (i) {
                     case 0:
 
-                        ImportThread thread = new ImportThread(Main.this);
+                        ImportThread thread = new ImportThread(Main.this,_handler);
                         menu.toggle();
                         thread.start();
                         break;
                     case 1:
                         ImportUtils.add(Main.this);
                         menu.toggle();
-                        Toast.makeText(Main.this,"手动添加",Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
                         ImportUtils.getNow(Main.this);
@@ -166,6 +165,10 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                         menu.toggle();
                         break;
                     case 4:
+                        changeFragment(mHelpFragment);
+                        menu.toggle();
+                        break;
+                    case 5:
                         finish();
                         break;
                 }
@@ -175,10 +178,11 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK)
+        if (keyCode == KeyEvent.KEYCODE_BACK)
             exit();
         return false;
     }
+
     public void exit() {
         if ((System.currentTimeMillis() - _exitTime) > 2000) {
             Toast.makeText(getApplicationContext(), "再按一次退出程序",
@@ -189,5 +193,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             finish();
 
         }
+    }
+    public Handler getHandler(){
+        return _handler;
     }
 }

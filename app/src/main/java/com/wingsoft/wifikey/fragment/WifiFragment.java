@@ -13,8 +13,8 @@ import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.activity.Main;
 import com.wingsoft.wifikey.adapter.WifiAdapter;
 import com.wingsoft.wifikey.db.WifiDB;
-import com.wingsoft.wifikey.model.Wifi;
 import com.wingsoft.wifikey.dialog.ItemDialog;
+import com.wingsoft.wifikey.model.Wifi;
 
 import java.util.List;
 
@@ -23,39 +23,44 @@ import java.util.List;
  */
 public class WifiFragment extends Fragment {
     private ListView listView;
-    private  WifiAdapter adapter;
+    private WifiAdapter adapter;
     private static List _list;
+
     @Override
-    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_wifi,container,false);
-        listView = (ListView)view.findViewById(R.id.listview);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_wifi, container, false);
+        listView = (ListView) view.findViewById(R.id.listview);
         _list = getList(getActivity());
-        adapter = new WifiAdapter(getActivity(),R.layout.listwifi,_list);
+        adapter = new WifiAdapter(getActivity(), R.layout.listwifi, _list);
         listView.setAdapter(adapter);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Wifi wifi = (Wifi)_list.get(i);
-                Main main = (Main)getActivity();
-                ItemDialog.getDialog(getActivity(),wifi,main.getFragmentAbout(),i);
+                Wifi wifi = (Wifi) _list.get(i);
+                Main main = (Main) getActivity();
+                ItemDialog.getDialog(getActivity(), wifi, main.getFragmentAbout(), i);
                 return false;
             }
         });
 
-
         return view;
     }
-    private  List  getList(Context context){
+
+    private List getList(Context context) {
         List list = null;
         list = WifiDB.getWifiDB(context).fetchAllData();
         return list;
     }
-    public void change(Context context){
+
+    public void change(Context context) {
         _list = getList(context);
         adapter.notifyDataSetChanged();
     }
-    public static List get_list(){
-      return _list;
-    };
+
+    public static List get_list() {
+        return _list;
+    }
+
+    ;
 
 }

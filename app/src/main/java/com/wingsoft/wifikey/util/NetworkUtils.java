@@ -5,11 +5,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
 import android.os.Message;
 
 import com.wingsoft.wifikey.activity.Main;
 import com.wingsoft.wifikey.db.WifiDB;
 import com.wingsoft.wifikey.model.Wifi;
+import com.wingsoft.wifikey.thread.GetNowThread;
+import com.wingsoft.wifikey.thread.ImportThread;
 
 /**
  * Created by wing on 15/7/7.
@@ -32,17 +35,7 @@ public class NetworkUtils {
         ssid= ssid.replace("\"", "");
         final Wifi wifi = new Wifi();
         wifi.setSsid(ssid);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-               Wifi dbWifi = WifiDB.getWifiDB(context).select(wifi);
-                Main main = (Main)context;
-                Message msg = main.get_handler().obtainMessage();
-                msg.obj = dbWifi;
-                msg.what = 0x11;
-                main.get_handler().sendMessage(msg);
-            }
-        }).start();
+        new GetNowThread(context,wifi).start();
         return _wifi;
     }
     public static void setWifi(Wifi wifi){

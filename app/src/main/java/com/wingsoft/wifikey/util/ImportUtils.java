@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,11 +51,13 @@ public class ImportUtils {
                 os.writeBytes(cmd + "\n");
                 os.writeBytes("exit\n");
                 os.flush();
+
             }
             process.waitFor();
         } catch (Exception e) {
-//            Toast.makeText(context, "请检查root权限", Toast.LENGTH_SHORT).show();
-        } finally {
+
+            Log.e("1111111111111111111111","catch到了111111111111");
+            } finally {
             try {
                 if (os != null) {
                     os.close();
@@ -87,6 +90,10 @@ public class ImportUtils {
 
         } catch (IOException e) {
             e.printStackTrace();
+            Main main = (Main)context;
+            Message msg =  main.getHandler().obtainMessage();
+            msg.what = 0x111;
+            main.getHandler().sendMessage(msg);
             System.out.print("打开文件出错");
 //            Toast.makeText(context, "导入出错", Toast.LENGTH_SHORT).show();
         }finally {

@@ -24,7 +24,7 @@ public class AboutFragment extends Fragment {
         _textView = (TextView)view.findViewById(R.id.version);
 
         try {
-            _textView.setText("Version "+getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(),0).versionName);
+            _textView.setText("version "+getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(),0).versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
