@@ -129,17 +129,22 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private void initMenu() {
         String[] list = getResources().getStringArray(R.array.list);
         mMenu = new SlidingMenu(this);
-        mMenu.setMode(SlidingMenu.LEFT);
+        mMenu.setMode(SlidingMenu.LEFT_RIGHT);
         mMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         mMenu.setShadowWidthRes(R.dimen.shadow_width);
         mMenu.setShadowDrawable(R.drawable.shadow);
         mMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         mMenu.setFadeDegree(0.35f);
         mMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        //为侧滑菜单设置布局
         mMenu.setMenu(R.layout.slidingmenu);
+        mMenu.setSecondaryMenu(R.layout.slidingmenu_right);
+        mMenu.setSecondaryShadowDrawable(R.drawable.right_shadow);
 
-//        mMenu.toggle();
+        mFragmentManager = getFragmentManager();
+        mTransaction = mFragmentManager.beginTransaction();
+        mTransaction.replace(R.id.slidingmenu_linear, mFragment_About);
+        mTransaction.commit();
+
         ListView lv = (ListView) mMenu.findViewById(R.id.list_silding);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
         lv.setAdapter(adapter);
@@ -161,15 +166,12 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                         ImportUtils.getNow(Main.this);
                         mMenu.toggle();
                         break;
+
                     case 3:
-                        changeFragment(mFragment_About);
-                        mMenu.toggle();
-                        break;
-                    case 4:
                         changeFragment(mHelpFragment);
                         mMenu.toggle();
                         break;
-                    case 5:
+                    case 4:
                         finish();
                         break;
                 }
