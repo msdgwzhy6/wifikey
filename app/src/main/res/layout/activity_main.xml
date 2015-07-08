@@ -9,31 +9,42 @@
         android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom"
+        android:layout_above="@+id/line"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
     </LinearLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d3d3d3"
+        android:layout_above="@+id/bottom"
+        android:id="@+id/line"/>
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_alignParentBottom="true">
 
 
-        <Button
+        <ImageButton
             android:id="@+id/button_wifi"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
+            android:background="#00000000"
+            android:src="@drawable/wifi_checked"
             android:text="wifi" />
 
-        <Button
+        <ImageButton
             android:id="@+id/button_news"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
+            android:background="#00000000"
+            android:src="@drawable/news_unchecked"
             android:text="资讯" />
 
 

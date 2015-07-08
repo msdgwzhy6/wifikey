@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -41,7 +42,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private WifiFragment mFragment_Wifi2 = new WifiFragment();
     private AboutFragment mFragment_About = new AboutFragment();
     private NewsFragment mFragment_News = new NewsFragment();
-    private Button mButtonWifi, mButtonNews;
+    private ImageButton mButtonWifi, mButtonNews;
     private SlidingMenu mMenu;
     private static boolean isFragment1 = false;
 
@@ -50,7 +51,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             switch (msg.what) {
                 case 0x11:
                     Wifi wifi = (Wifi) msg.obj;
-                    new AlertDialog.Builder(Main.this).setTitle("当前密码" + wifi.getKey()).setNegativeButton("确定", null).show();
+                    new AlertDialog.Builder(Main.this).setTitle("当前密码:" + wifi.getKey()).setNegativeButton("确定", null).show();
                     break;
                 case 0x111:
                     Toast.makeText(Main.this,"导入失败,请检查root权限",Toast.LENGTH_SHORT).show();
@@ -66,8 +67,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         mFragmentLayout = (LinearLayout) findViewById(R.id.linear);
         changeFragment(mFragment_Wifi);
-        mButtonWifi = (Button) findViewById(R.id.button_wifi);
-        mButtonNews = (Button) findViewById(R.id.button_news);
+        mButtonWifi = (ImageButton) findViewById(R.id.button_wifi);
+        mButtonNews = (ImageButton) findViewById(R.id.button_news);
 
         mButtonWifi.setOnClickListener(this);
         mButtonNews.setOnClickListener(this);
@@ -89,13 +90,16 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_wifi:
+                mButtonWifi.setImageResource(R.drawable.wifi_checked);
+                mButtonNews.setImageResource(R.drawable.news_unchecked);
                 changeFragment(mFragment_Wifi);
 
 
                 break;
 
             case R.id.button_news:
-
+                mButtonNews.setImageResource(R.drawable.news_checked);
+                mButtonWifi.setImageResource(R.drawable.wifi_unchecked);
                 changeFragment(mFragment_News);
                 break;
         }
