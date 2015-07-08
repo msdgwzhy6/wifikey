@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:textColor="#ff595959"
 
-            android:text="ssid:"
+            android:text="网络名:"
             android:textSize="17sp" />
         <TextView
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
            android:layout_height="wrap_content"
            android:textColor="#ff595959"
 
-           android:text="key:"
+           android:text="密  码:"
            android:textSize="17sp" />
        <TextView
            android:layout_width="match_parent"
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:textColor="#ff595959"
 
-        android:text="comment:"
+        android:text="备  注:"
         android:textSize="17sp" />
     <TextView
         android:layout_width="match_parent"

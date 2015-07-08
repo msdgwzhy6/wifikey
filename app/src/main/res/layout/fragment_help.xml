@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:text="ssdasd"
     android:id="@+id/helptext"
-
+    android:autoLink="web"
     android:layout_centerVertical="true"
     android:layout_centerHorizontal="true" />
 </RelativeLayout>

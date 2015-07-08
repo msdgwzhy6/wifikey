@@ -17,10 +17,10 @@ import java.util.List;
  * Created by wing on 15/7/6.
  */
 public class WifiAdapter extends ArrayAdapter<Wifi> {
-    private int resourceId;
+    private int mResourceId;
     public WifiAdapter(Context context, int textViewResourceId, List<Wifi> objects) {
         super(context,textViewResourceId,objects);
-        resourceId = textViewResourceId;
+        mResourceId = textViewResourceId;
     }
     @Override
     public View getView(int pos,View container,ViewGroup parent){
@@ -28,7 +28,7 @@ public class WifiAdapter extends ArrayAdapter<Wifi> {
         View view;
         ViewHolder viewHolder;
         if(container==null){
-            view = LayoutInflater.from(getContext()).inflate(resourceId,null);
+            view = LayoutInflater.from(getContext()).inflate(mResourceId,null);
             viewHolder = new ViewHolder();
             viewHolder.textSsid = (TextView)view.findViewById(R.id.text_ssid);
             viewHolder.textKey = (TextView)view.findViewById(R.id.text_key);

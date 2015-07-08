@@ -17,18 +17,18 @@ import java.util.List;
 public class WifiDB {
     public static final String DB_NAME = "wifi";
     public static final int VERSION = 1;
-    private static WifiDB wifiDB;
+    private static WifiDB mWifiDB;
     private SQLiteDatabase db;
     private WifiDB(Context context){
         WifikeyOpenHelper woh = new WifikeyOpenHelper(context,DB_NAME,VERSION);
         db = woh.getWritableDatabase();
     }
     public static WifiDB getWifiDB(Context context) {
-        if (wifiDB == null) {
-            wifiDB = new WifiDB(context);
+        if (mWifiDB == null) {
+            mWifiDB = new WifiDB(context);
 
         }
-        return wifiDB;
+        return mWifiDB;
     }
     public Wifi select(Wifi wifi){
         Cursor c =db.rawQuery("select * from Wifi where ssid ='" + wifi.getSsid() + "'", null);

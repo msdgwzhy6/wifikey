@@ -15,20 +15,20 @@ import com.wingsoft.wifikey.util.ImportUtils;
  */
 public class GetNowThread extends Thread {
 
-    private Context _context;
-    private Handler _handler;
-    private Wifi _wifi;
+    private Context mContext;
+    private Handler mHandler;
+    private Wifi mWifi;
     public GetNowThread(Context context,Wifi wifi){
 
-        _context = context;
-        _wifi = wifi;
+        mContext = context;
+        mWifi = wifi;
     }
     public void run(){
 
         try {
-            ImportUtils.importWifi(_context);
-            Wifi dbWifi = WifiDB.getWifiDB(_context).select(_wifi);
-            Main main = (Main)_context;
+            ImportUtils.importWifi(mContext);
+            Wifi dbWifi = WifiDB.getWifiDB(mContext).select(mWifi);
+            Main main = (Main)mContext;
             Message msg = main.get_handler().obtainMessage();
             msg.obj = dbWifi;
             msg.what = 0x11;
@@ -36,7 +36,7 @@ public class GetNowThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Main main = (Main) _context;
+        Main main = (Main) mContext;
         main.reFresh();
 
 

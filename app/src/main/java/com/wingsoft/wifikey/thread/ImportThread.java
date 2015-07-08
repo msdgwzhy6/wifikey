@@ -12,20 +12,20 @@ import com.wingsoft.wifikey.util.ImportUtils;
  * Created by wing on 15/7/6.
  */
 public class ImportThread extends Thread {
-    private Context _context;
-    private Handler _handler;
+    private Context mContext;
+    private Handler mHandler;
     public ImportThread(Context context,Handler handler){
-        _context = context;
-        _handler = handler;
+        mContext = context;
+        mHandler = handler;
     }
     public void run(){
 
         try {
-            ImportUtils.importWifi(_context);
+            ImportUtils.importWifi(mContext);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Main main = (Main) _context;
+        Main main = (Main) mContext;
         main.reFresh();
 
 

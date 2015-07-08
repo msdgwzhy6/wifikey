@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/background_floating_material_dark">
-<ListView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#d9d9d9"
-    android:id="@+id/list_silding">
-</ListView>
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/ic_launcher" />
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"></View>
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:text="wifi密码读取器"/>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"></View>
+
+    <ListView
+        android:id="@+id/list_silding"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#d9d9d9"></ListView>
 </LinearLayout>
