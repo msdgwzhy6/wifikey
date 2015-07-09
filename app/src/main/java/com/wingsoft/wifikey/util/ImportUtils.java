@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,6 +127,11 @@ public class ImportUtils {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         EditText ssid = (EditText) myView.findViewById(R.id.edit_ssid);
                         EditText key = (EditText) myView.findViewById(R.id.edit_key);
+                        if (TextUtils.isEmpty(ssid.getText().toString())) {
+                            Toast.makeText(context,"网络名不能为空",Toast.LENGTH_SHORT).show();
+                            add(context);
+                            return;
+                        }
                         wifi.setSsid(ssid.getText().toString());
                         wifi.setKey(key.getText().toString());
                         new Thread(new Runnable() {

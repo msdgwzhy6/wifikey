@@ -73,8 +73,8 @@ public class ItemDialog {
                                         Intent intent = new Intent(Intent.ACTION_SEND);
                                         Wifi theWifi = (Wifi) WifiFragment.get_list().get(i);
                                         intent.setType("text/plain");
-                                        intent.setPackage("com.tencent.mobileqq");
-                                        intent.putExtra(Intent.EXTRA_TEXT, "wifi密码读取器：您的朋友给您分享了一条wifi 网络名："+theWifi.getSsid()+" 密码："+theWifi.getKey());
+//                                        intent.setPackage("com.tencent.mobileqq");
+                                        intent.putExtra(Intent.EXTRA_TEXT, "wifi密码读取器：\n您的朋友给您分享了一条wifi\n网络名："+theWifi.getSsid()+"\n密码："+theWifi.getKey());
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         context.startActivity(Intent.createChooser(intent, "请选择"));
                                         return;
