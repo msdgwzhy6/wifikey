@@ -21,9 +21,10 @@ import java.net.URL;
  * Created by wing on 15/7/9.
  */
 public class HttpUtils {
-    public static String ADDRESS = "http://192.168.43.177:8080/Wifikey/check.do";
+    public static String LOGIN = "http://www.youngsoft.science:8080/Wifikey/check.do";
+    public static String REG = "http://www.youngsoft.science:8080/Wifikey/reg.do";
 
-    public static void login(String username, String password, Handler handler) {
+    public static void sendPost(String address, String username, String password, Handler handler) {
         HttpURLConnection connection = null;
         HttpCallbackListener listener = new HttpCallbackListener() {
             @Override
@@ -31,9 +32,29 @@ public class HttpUtils {
                 Message msg = handler.obtainMessage();
                 msg.what = LoginState.NETWORK_SUCCESS;
                 User user = null;
-                if(res.equals("true")){
-                    user = new User("admin","123");
+                if (res.substring(0, 4).equals("true")) {
 
+                    String username = res.substring(4);
+                    Log.i("POST", "登录成功" + username);
+                    user = new User(username, "");
+                    Log.i("POST", "state is " + res.substring(0, 4));
+
+                } else if (res.substring(0, 5).equals("false")) {
+
+
+
+                    Log.i("POST", "state is " + res.substring(0, 5));
+
+
+                } else if (res.substring(0, 6).equals("failed")) {
+                    msg.arg1 = LoginState.REG_FAILED;
+                    Log.i("POST", "注册失败");
+                    Log.i("POST", "state is " + res.substring(0, 6));
+                } else if (res.substring(0, 7).equals("success")) {
+                    String username = res.substring(7);
+                    user = new User(username, "");
+                    msg.arg1 = LoginState.REG_SUCCESS;
+                    Log.i("POST", "state is " + res.substring(0, 7));
                 }
                 msg.obj = user;
                 handler.sendMessage(msg);
@@ -48,7 +69,7 @@ public class HttpUtils {
         };
         try {
 
-            URL url = new URL(ADDRESS);
+            URL url = new URL(address);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setReadTimeout(8000);
@@ -62,7 +83,7 @@ public class HttpUtils {
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
-            Log.i("POST", sb.toString());
+            Log.i("POST", "server return " + sb.toString());
             if (listener != null) {
                 listener.onFinish(sb.toString(), handler);
             }
@@ -70,7 +91,7 @@ public class HttpUtils {
             if (listener != null) {
                 listener.onError(handler);
             }
-            Log.i("POST",e.getMessage());
+            Log.i("POST", e.getMessage());
             e.printStackTrace();
         } finally {
             if (connection != null) {

@@ -6,11 +6,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.wingsoft.wifikey.R;
@@ -19,28 +19,34 @@ import com.wingsoft.wifikey.model.User;
 import com.wingsoft.wifikey.util.HttpUtils;
 
 public class LoginActivity extends ActionBarActivity {
-    private Button mLoginButton;
+    private Button mLoginButton, mRegButton;
     private User mUser;
-    private EditText mEdit_Username,mEdit_Password;
-    private boolean haveResult;
-    private ProgressDialog mProgressDialog ;
+    private EditText mEdit_Username, mEdit_Password;
+
+    private ProgressDialog mProgressDialog;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case LoginState.NETWORK_SUCCESS:
-                    mUser = (User)msg.obj;
+                    mUser = (User) msg.obj;
                     progressCancel();
-                    if(mUser!=null){
-                        Toast.makeText(LoginActivity.this,"登陆成功",Toast.LENGTH_SHORT).show();
-
+                    if (mUser != null) {
+                        if (msg.arg1 == LoginState.REG_SUCCESS) {
+                            Toast.makeText(LoginActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+                        }
                         Intent intent = new Intent();
-                        intent.putExtra("user",mUser);
-                        setResult(LoginState.RESULT,intent);
+                        intent.putExtra("user", mUser);
+                        setResult(LoginState.RESULT, intent);
                         finish();
-                    }else{
-                        Toast.makeText(LoginActivity.this,"用户名密码错误",Toast.LENGTH_SHORT).show();
-
+                    } else {
+                        if(msg.arg1 == LoginState.REG_FAILED){
+                            Toast.makeText(LoginActivity.this,"用户已存在",Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(LoginActivity.this, "用户名密码错误", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     break;
                 case LoginState.NETWORK_FAILED:
@@ -55,30 +61,53 @@ public class LoginActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mEdit_Username = (EditText)findViewById(R.id.edit_username);
-        mEdit_Password = (EditText)findViewById(R.id.edit_password);
+        mEdit_Username = (EditText) findViewById(R.id.edit_username);
+        mEdit_Password = (EditText) findViewById(R.id.edit_password);
         mLoginButton = (Button) findViewById(R.id.button_login);
+        mRegButton = (Button) findViewById(R.id.button_reg);
+
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String username = mEdit_Username.getText().toString();
                 final String password = mEdit_Password.getText().toString();
+                if(TextUtils.isEmpty(username)||TextUtils.isEmpty(password)){
+                    Toast.makeText(LoginActivity.this,"用户名密码不能为空",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 mProgressDialog = new ProgressDialog(LoginActivity.this);
-                mProgressDialog.setMessage("登录中");
+                mProgressDialog.setMessage("处理中");
                 mProgressDialog.show();
-                Log.i("POST",username + password);
+                Log.i("POST", username + " Login "+  password);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        HttpUtils.login(username, password, mHandler);
+                        HttpUtils.sendPost(HttpUtils.LOGIN, username, password, mHandler);
                     }
                 }).start();
             }
         });
-
+        mRegButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String username = mEdit_Username.getText().toString();
+                final String password = mEdit_Password.getText().toString();
+                mProgressDialog = new ProgressDialog(LoginActivity.this);
+                mProgressDialog.setMessage("处理中");
+                mProgressDialog.show();
+                Log.i("POST", "reg ：" + username +" "+ password);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpUtils.sendPost(HttpUtils.REG, username, password, mHandler);
+                    }
+                }).start();
+            }
+        });
     }
-    private void progressCancel(){
-        if(mProgressDialog!=null){
+
+    private void progressCancel() {
+        if (mProgressDialog != null) {
             mProgressDialog.cancel();
         }
     }

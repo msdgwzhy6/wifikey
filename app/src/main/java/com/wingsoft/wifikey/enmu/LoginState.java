@@ -6,5 +6,7 @@ package com.wingsoft.wifikey.enmu;
 public class  LoginState {
     final public static int NETWORK_SUCCESS = 0x001;
     final public static int NETWORK_FAILED = 0x002;
+    final public static int REG_SUCCESS = 0x003;
+    final public static int REG_FAILED = 0x004;
     final public static int RESULT = 1;
 }

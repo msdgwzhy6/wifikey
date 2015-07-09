@@ -107,7 +107,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             case R.id.button_news:
                 mButtonNews.setImageResource(R.drawable.news_checked);
                 mButtonWifi.setImageResource(R.drawable.wifi_unchecked);
-//                changeFragment(mFragment_News);
+//               changeFragment(mFragment_News);
                 Intent intent = new Intent(Main.this,LoginActivity.class);
                 startActivityForResult(intent, LoginState.RESULT);
                 break;
@@ -141,6 +141,12 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     protected void onResume() {
         if(mLoginUser!=null){
             mTextViewMenuUser.setText("恭喜登录！"+mLoginUser.getmUsername());
+            mButtonNews.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    changeFragment(mFragment_News);
+                }
+            });
         }
         super.onResume();
     }
@@ -157,6 +163,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         mMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         mMenu.setMenu(R.layout.slidingmenu);
         mMenu.setSecondaryMenu(R.layout.slidingmenu_right);
+        mMenu.showMenu();
         mMenu.setSecondaryShadowDrawable(R.drawable.right_shadow);
         mTextViewMenuUser = (TextView)mMenu.findViewById(R.id.text_menu_username);
         mFragmentManager = getFragmentManager();
@@ -226,6 +233,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             case LoginState.RESULT:
                 mLoginUser = (User)data.getSerializableExtra("user");
                 Log.i("onReuslt","ss");
+                changeFragment(mFragment_News);
                 break;
         }
     }

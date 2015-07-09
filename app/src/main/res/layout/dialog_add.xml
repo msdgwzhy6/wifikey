@@ -16,6 +16,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:singleLine="true"
         android:id="@+id/edit_ssid"/>
 </LinearLayout>
     <LinearLayout
@@ -28,6 +29,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:id="@+id/edit_key"/>
     </LinearLayout>
 
