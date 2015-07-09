@@ -1,6 +1,7 @@
 package com.wingsoft.wifikey.activity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -58,11 +60,43 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case ImportState.IMPORT_NOW:
-                    Wifi wifi = (Wifi) msg.obj;
-                    new AlertDialog.Builder(Main.this).setTitle("当前密码:" + wifi.getKey()).setNegativeButton("确定", null).show();
+                    final Wifi wifi = (Wifi) msg.obj;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Main.this);
+
+                    View view = LayoutInflater.from(Main.this).inflate(R.layout.dialog_wifinow, null);
+                    builder.setView(view);
+                    final AlertDialog dialog = builder.create();
+
+                    Button confirmButton = (Button) view.findViewById(R.id.button_confirm);
+                    Button shareButton = (Button) view.findViewById(R.id.button_share);
+                    TextView tv = (TextView)view.findViewById(R.id.text_wifinow);
+                    tv.setText("当前密码："+wifi.getKey());
+                    confirmButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.cancel();
+                            return;
+                        }
+                    });
+                    shareButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("text/plain");
+//                                        intent.setPackage("com.tencent.mobileqq");
+                            intent.putExtra(Intent.EXTRA_TEXT, "wifi密码读取器：\n您的朋友给您分享了一条wifi\n网络名：" + wifi.getSsid() + "\n密码：" + wifi.getKey());
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(Intent.createChooser(intent, "请选择"));
+
+                        }
+                    });
+
+                    dialog.show();
+
                     break;
                 case ImportState.IMPORT_ERROR:
-                    Toast.makeText(Main.this,"导入失败,请检查root权限",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Main.this, "导入失败,请检查root权限", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -108,7 +142,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                 mButtonNews.setImageResource(R.drawable.news_checked);
                 mButtonWifi.setImageResource(R.drawable.wifi_unchecked);
 //               changeFragment(mFragment_News);
-                Intent intent = new Intent(Main.this,LoginActivity.class);
+                Intent intent = new Intent(Main.this, LoginActivity.class);
                 startActivityForResult(intent, LoginState.RESULT);
                 break;
         }
@@ -125,7 +159,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     }
 
 
-
     public void reFresh() {
         if (isFragment1) {
             changeFragment(mFragment_Wifi);
@@ -139,8 +172,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     @Override
     protected void onResume() {
-        if(mLoginUser!=null){
-            mTextViewMenuUser.setText("恭喜登录！"+mLoginUser.getmUsername());
+        if (mLoginUser != null) {
+            mTextViewMenuUser.setText("当前账号：" + mLoginUser.getmUsername());
             mButtonNews.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -165,7 +198,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         mMenu.setSecondaryMenu(R.layout.slidingmenu_right);
         mMenu.showMenu();
         mMenu.setSecondaryShadowDrawable(R.drawable.right_shadow);
-        mTextViewMenuUser = (TextView)mMenu.findViewById(R.id.text_menu_username);
+        mTextViewMenuUser = (TextView) mMenu.findViewById(R.id.text_menu_username);
         mFragmentManager = getFragmentManager();
         mTransaction = mFragmentManager.beginTransaction();
         mTransaction.replace(R.id.slidingmenu_linear, mFragment_About);
@@ -180,7 +213,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                 switch (i) {
                     case 0:
 
-                        ImportThread thread = new ImportThread(Main.this,_handler);
+                        ImportThread thread = new ImportThread(Main.this, _handler);
                         mMenu.toggle();
                         thread.start();
                         break;
@@ -223,16 +256,17 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
         }
     }
-    public Handler getHandler(){
+
+    public Handler getHandler() {
         return _handler;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode){
+        switch (resultCode) {
             case LoginState.RESULT:
-                mLoginUser = (User)data.getSerializableExtra("user");
-                Log.i("onReuslt","ss");
+                mLoginUser = (User) data.getSerializableExtra("user");
+                Log.i("onReuslt", "ss");
                 changeFragment(mFragment_News);
                 break;
         }
