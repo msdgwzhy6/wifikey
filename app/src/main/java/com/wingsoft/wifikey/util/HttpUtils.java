@@ -33,6 +33,7 @@ public class HttpUtils {
                 User user = null;
                 if(res.equals("true")){
                     user = new User("admin","123");
+
                 }
                 msg.obj = user;
                 handler.sendMessage(msg);
