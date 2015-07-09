@@ -6,6 +6,7 @@ import android.os.Message;
 
 import com.wingsoft.wifikey.activity.Main;
 import com.wingsoft.wifikey.db.WifiDB;
+import com.wingsoft.wifikey.enmu.ImportState;
 import com.wingsoft.wifikey.fragment.WifiFragment;
 import com.wingsoft.wifikey.model.Wifi;
 import com.wingsoft.wifikey.util.ImportUtils;
@@ -31,7 +32,7 @@ public class GetNowThread extends Thread {
             Main main = (Main)mContext;
             Message msg = main.get_handler().obtainMessage();
             msg.obj = dbWifi;
-            msg.what = 0x11;
+            msg.what = ImportState.IMPORT_NOW;
             main.get_handler().sendMessage(msg);
         } catch (Exception e) {
             e.printStackTrace();

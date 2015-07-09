@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:text="密  码:"
                 android:layout_marginLeft="20dp"
-                android:textColor="#ff595959"
+                android:textColor="@color/grey"
                 android:textSize="13sp"
                 android:id="@+id/textView" />
 
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
 
                 android:text="key"
-                android:textColor="#ff595959"
+                android:textColor="@color/grey"
                 android:textSize="13sp"
                 android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/textView"
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
 
                 android:text="备  注:"
-                android:textColor="#ff595959"
+                android:textColor="@color/grey"
                 android:textSize="13sp"
                 android:layout_alignParentTop="true"
                 android:layout_toLeftOf="@+id/text_comment"
@@ -83,7 +83,7 @@
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:text="comment"
-                android:textColor="#ff595959"
+                android:textColor="@color/grey"
                 android:textSize="13sp"
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>

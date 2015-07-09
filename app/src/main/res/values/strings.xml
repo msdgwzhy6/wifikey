@@ -6,4 +6,5 @@
     <string name="title_activity_logo">Logo</string>
     <string name="logo_button">开启</string>
     <string name="title_activity_main">Main</string>
+    <string name="title_activity_login">登录</string>
 </resources>

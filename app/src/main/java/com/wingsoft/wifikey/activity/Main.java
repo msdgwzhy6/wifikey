@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -20,16 +21,20 @@ import android.widget.LinearLayout;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wingsoft.wifikey.R;
+import com.wingsoft.wifikey.enmu.ImportState;
+import com.wingsoft.wifikey.enmu.LoginState;
 import com.wingsoft.wifikey.fragment.AboutFragment;
 import com.wingsoft.wifikey.fragment.HelpFragment;
 import com.wingsoft.wifikey.fragment.NewsFragment;
 import com.wingsoft.wifikey.fragment.WifiFragment;
+import com.wingsoft.wifikey.model.User;
 import com.wingsoft.wifikey.model.Wifi;
 import com.wingsoft.wifikey.thread.ImportThread;
 import com.wingsoft.wifikey.util.ImportUtils;
 
 import android.os.Handler;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Main extends ActionBarActivity implements View.OnClickListener {
@@ -44,16 +49,19 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private NewsFragment mFragment_News = new NewsFragment();
     private ImageButton mButtonWifi, mButtonNews;
     private SlidingMenu mMenu;
+    private TextView mTextViewMenuUser;
+    private User mLoginUser = null;
+
     private static boolean isFragment1 = false;
 
     private Handler _handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 0x11:
+                case ImportState.IMPORT_NOW:
                     Wifi wifi = (Wifi) msg.obj;
                     new AlertDialog.Builder(Main.this).setTitle("当前密码:" + wifi.getKey()).setNegativeButton("确定", null).show();
                     break;
-                case 0x111:
+                case ImportState.IMPORT_ERROR:
                     Toast.makeText(Main.this,"导入失败,请检查root权限",Toast.LENGTH_SHORT).show();
             }
 
@@ -69,7 +77,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         changeFragment(mFragment_Wifi);
         mButtonWifi = (ImageButton) findViewById(R.id.button_wifi);
         mButtonNews = (ImageButton) findViewById(R.id.button_news);
-
         mButtonWifi.setOnClickListener(this);
         mButtonNews.setOnClickListener(this);
 
@@ -100,7 +107,9 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             case R.id.button_news:
                 mButtonNews.setImageResource(R.drawable.news_checked);
                 mButtonWifi.setImageResource(R.drawable.wifi_unchecked);
-                changeFragment(mFragment_News);
+//                changeFragment(mFragment_News);
+                Intent intent = new Intent(Main.this,LoginActivity.class);
+                startActivityForResult(intent, LoginState.RESULT);
                 break;
         }
 
@@ -115,9 +124,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         return _handler;
     }
 
-//    public WifiFragment get_fragment_Wifi2() {
-//        return _fragment_Wifi2;
-//    }
+
 
     public void reFresh() {
         if (isFragment1) {
@@ -128,6 +135,14 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             isFragment1 = true;
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        if(mLoginUser!=null){
+            mTextViewMenuUser.setText("恭喜登录！"+mLoginUser.getmUsername());
+        }
+        super.onResume();
     }
 
     private void initMenu() {
@@ -143,7 +158,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         mMenu.setMenu(R.layout.slidingmenu);
         mMenu.setSecondaryMenu(R.layout.slidingmenu_right);
         mMenu.setSecondaryShadowDrawable(R.drawable.right_shadow);
-
+        mTextViewMenuUser = (TextView)mMenu.findViewById(R.id.text_menu_username);
         mFragmentManager = getFragmentManager();
         mTransaction = mFragmentManager.beginTransaction();
         mTransaction.replace(R.id.slidingmenu_linear, mFragment_About);
@@ -203,5 +218,15 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     }
     public Handler getHandler(){
         return _handler;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode){
+            case LoginState.RESULT:
+                mLoginUser = (User)data.getSerializableExtra("user");
+                Log.i("onReuslt","ss");
+                break;
+        }
     }
 }
