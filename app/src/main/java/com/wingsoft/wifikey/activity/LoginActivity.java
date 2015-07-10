@@ -1,5 +1,6 @@
 package com.wingsoft.wifikey.activity;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -122,6 +124,7 @@ public class LoginActivity extends ActionBarActivity {
                 }).start();
             }
         });
+
     }
 
     @Override
@@ -134,5 +137,14 @@ public class LoginActivity extends ActionBarActivity {
         if (mProgressDialog != null) {
             mProgressDialog.cancel();
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                finish();
+
+        }
+        return true;
     }
 }

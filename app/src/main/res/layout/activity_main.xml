@@ -9,17 +9,20 @@
         android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/line"
+        android:layout_above="@+id/adLayout"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#d3d3d3"
+    <LinearLayout
+        android:id="@+id/adLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:layout_above="@+id/bottom"
-        android:id="@+id/line"/>
+        >
+
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"

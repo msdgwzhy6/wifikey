@@ -25,6 +25,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.enmu.ImportState;
 import com.wingsoft.wifikey.enmu.LoginState;
+import com.wingsoft.wifikey.enmu.YoumiAd;
 import com.wingsoft.wifikey.fragment.AboutFragment;
 import com.wingsoft.wifikey.fragment.HelpFragment;
 import com.wingsoft.wifikey.fragment.NewsFragment;
@@ -38,6 +39,11 @@ import android.os.Handler;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import net.youmi.android.AdManager;
+import net.youmi.android.banner.AdSize;
+import net.youmi.android.banner.AdView;
+import net.youmi.android.spot.SpotManager;
 
 public class Main extends ActionBarActivity implements View.OnClickListener {
     private long mExitTime = 0;
@@ -53,7 +59,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     private SlidingMenu mMenu;
     private TextView mTextViewMenuUser;
     private User mLoginUser = null;
-
+    private boolean isad = false;
     private static boolean isFragment1 = false;
 
     private Handler _handler = new Handler() {
@@ -97,6 +103,14 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                     break;
                 case ImportState.IMPORT_ERROR:
                     Toast.makeText(Main.this, "导入失败,请检查root权限", Toast.LENGTH_SHORT).show();
+                case YoumiAd.ISAD:
+                    AdView adView = new AdView(Main.this, AdSize.FIT_SCREEN);
+// 获取要嵌入广告条的布局
+                    LinearLayout adLayout=(LinearLayout)findViewById(R.id.adLayout);
+// 将广告条加入到布局中
+                    adLayout.addView(adView);
+                    isad = true;
+                    break;
             }
 
 
@@ -113,6 +127,21 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
         mButtonNews = (ImageButton) findViewById(R.id.button_news);
         mButtonWifi.setOnClickListener(this);
         mButtonNews.setOnClickListener(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String value = AdManager.getInstance(Main.this).syncGetOnlineConfig("IsAd", "what");
+                if(value.equals("true")){
+                    Message m = _handler.obtainMessage();
+                    m.what = YoumiAd.ISAD;
+                    _handler.sendMessage(m);
+                    Log.i("value",value);
+
+                }
+            }
+        }).start();
+
+
 
         initMenu();
 
@@ -247,6 +276,10 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     public void exit() {
         if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            if(isad){
+                SpotManager.getInstance(this).showSpotAds(this);
+                Log.i("value","开启广告");
+            }
             Toast.makeText(getApplicationContext(), "再按一次退出程序",
                     Toast.LENGTH_SHORT).show();
             mMenu.toggle();
@@ -270,5 +303,22 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                 changeFragment(mFragment_News);
                 break;
         }
+    }
+
+    @Override
+
+    protected void onStop() {
+
+        // 如果不调用此方法，则按home键的时候会出现图标无法显示的情况。
+        SpotManager.getInstance(this).onStop();
+        super.onStop();
+    }
+
+    @Override
+
+    protected void onDestroy() {
+
+        SpotManager.getInstance(this).onDestroy();
+        super.onDestroy();
     }
 }
