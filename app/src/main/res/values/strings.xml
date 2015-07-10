@@ -7,4 +7,5 @@
     <string name="logo_button">开启</string>
     <string name="title_activity_main">Main</string>
     <string name="title_activity_login">登录</string>
+    <string name="title_activity_reg">注册</string>
 </resources>

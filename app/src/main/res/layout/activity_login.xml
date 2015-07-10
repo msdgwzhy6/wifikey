@@ -34,6 +34,22 @@
             android:id="@+id/edit_password"
             android:layout_width="300dp"
             android:singleLine="true"
+            android:password="true"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/linear_confirm">
+
+        <EditText
+            android:drawableLeft="@drawable/edit_lift_password"
+            android:id="@+id/edit_password2"
+            android:layout_width="300dp"
+            android:singleLine="true"
+            android:password="true"
             android:layout_height="wrap_content"
             />
     </LinearLayout>

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.wingsoft.wifikey.R;
@@ -21,8 +22,9 @@ import com.wingsoft.wifikey.util.HttpUtils;
 public class LoginActivity extends ActionBarActivity {
     private Button mLoginButton, mRegButton;
     private User mUser;
-    private EditText mEdit_Username, mEdit_Password;
-
+    private EditText mEdit_Username, mEdit_Password,mEdit_Password2;
+    private boolean isReg = false;
+    private LinearLayout mLinearLayout;
     private ProgressDialog mProgressDialog;
     private Handler mHandler = new Handler() {
         @Override
@@ -63,9 +65,11 @@ public class LoginActivity extends ActionBarActivity {
         setContentView(R.layout.activity_login);
         mEdit_Username = (EditText) findViewById(R.id.edit_username);
         mEdit_Password = (EditText) findViewById(R.id.edit_password);
+        mEdit_Password2 = (EditText)findViewById(R.id.edit_password2);
         mLoginButton = (Button) findViewById(R.id.button_login);
         mRegButton = (Button) findViewById(R.id.button_reg);
-
+        mLinearLayout = (LinearLayout)findViewById(R.id.linear_confirm);
+        mLinearLayout.setVisibility(View.GONE);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,8 +94,22 @@ public class LoginActivity extends ActionBarActivity {
         mRegButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!isReg){
+                    isReg = true;
+                    mLinearLayout.setVisibility(View.VISIBLE);
+                    return;
+                }
                 final String username = mEdit_Username.getText().toString();
                 final String password = mEdit_Password.getText().toString();
+                final String password2 = mEdit_Password2.getText().toString();
+                if(TextUtils.isEmpty(username)||TextUtils.isEmpty(password)||TextUtils.isEmpty(password2)){
+                    Toast.makeText(LoginActivity.this,"用户名密码不能为空",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(!password.equals(password2)){
+                    Toast.makeText(LoginActivity.this,"确认密码不符，请检查",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 mProgressDialog = new ProgressDialog(LoginActivity.this);
                 mProgressDialog.setMessage("处理中");
                 mProgressDialog.show();
@@ -104,6 +122,12 @@ public class LoginActivity extends ActionBarActivity {
                 }).start();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        isReg = false;
+        super.onResume();
     }
 
     private void progressCancel() {
