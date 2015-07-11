@@ -45,54 +45,7 @@ public class NewsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        mListView = (ListView)findViewById(R.id.listview_news);
-        progressDialog.setMessage("loading");
-        progressDialog.show();
-        final ArrayList<News> list = new ArrayList<News>();
 
-
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        JsonArrayRequest request = new JsonArrayRequest("http://m.bitauto.com/appapi/News/List.ashx/",
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray jsonArray) {
-
-                        Log.i("volley", jsonArray.toString());
-                        JSONObject jsonObject;
-                        for(int i = 0 ; i < jsonArray.length();i++){
-                            try {
-                                jsonObject = jsonArray.getJSONObject(i);
-                                News news = new News();
-                                news.setmFirstPicUrl(jsonObject.getString("FirstPicUrl"));
-                                news.setmId(jsonObject.getString("ID"));
-                                news.setmPublishTime(jsonObject.getString("PublishTime"));
-                                news.setmTitle(jsonObject.getString("Title"));
-                                list.add(news);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Log.i("volley","jsonerror");
-                            }
-
-                        }
-                        Log.i("volley",list.size()+"");
-                        NewsAdapter adapter = new NewsAdapter(NewsActivity.this,list);
-                        mListView.setAdapter(adapter);
-
-                        progressDialog.cancel();
-
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.i("volley","error");
-
-            }
-        });
-        queue.add(request);
 
 
     }
