@@ -24,4 +24,5 @@ dependencies {
     compile project(':libraries:SlidingMenu')
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile files('/Users/wing/Documents/workspace/Wifikey/libs/YoumiSdk_v5.00_2015-01-08.jar')
+    compile files('/Users/wing/Documents/workspace/Wifikey/libs/volley.jar')
 }
