@@ -23,6 +23,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.wingsoft.wifikey.R;
+import com.wingsoft.wifikey.adapter.NewsAdapter;
 import com.wingsoft.wifikey.model.News;
 
 import org.json.JSONArray;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.transform.ErrorListener;
 
@@ -45,8 +47,11 @@ public class NewsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_news);
         final ProgressDialog progressDialog = new ProgressDialog(this);
         mListView = (ListView)findViewById(R.id.listview_news);
-        mTextView = (TextView)findViewById(R.id.textwheater);
-        final ArrayList<News>list = new ArrayList<>();
+        progressDialog.setMessage("loading");
+        progressDialog.show();
+        final ArrayList<News> list = new ArrayList<News>();
+
+
 
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonArrayRequest request = new JsonArrayRequest("http://m.bitauto.com/appapi/News/List.ashx/",
@@ -65,14 +70,19 @@ public class NewsActivity extends ActionBarActivity {
                                 news.setmPublishTime(jsonObject.getString("PublishTime"));
                                 news.setmTitle(jsonObject.getString("Title"));
                                 list.add(news);
-                                
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Log.i("volley","jsonerror");
                             }
 
                         }
-                        mTextView.setText(list.get(2).getmTitle());
+                        Log.i("volley",list.size()+"");
+                        NewsAdapter adapter = new NewsAdapter(NewsActivity.this,list);
+                        mListView.setAdapter(adapter);
+
+                        progressDialog.cancel();
+
 
                     }
                 }, new Response.ErrorListener() {
