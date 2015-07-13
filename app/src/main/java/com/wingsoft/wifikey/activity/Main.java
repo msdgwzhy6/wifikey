@@ -40,10 +40,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.youmi.android.AdManager;
-import net.youmi.android.banner.AdSize;
-import net.youmi.android.banner.AdView;
-import net.youmi.android.spot.SpotManager;
+import net.slidingmenu.tools.AdManager;
+import net.slidingmenu.tools.br.AdSize;
+import net.slidingmenu.tools.br.AdView;
+import net.slidingmenu.tools.st.SpotManager;
 
 public class Main extends ActionBarActivity implements View.OnClickListener {
     private long mExitTime = 0;

@@ -42,6 +42,22 @@
             android:label="@string/title_activity_news" >
 
         </activity>
+        <activity
+            android:name="net.slidingmenu.tools.AdBrowser"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <service
+            android:name="net.slidingmenu.tools.AdService" >
+        </service>
+        <receiver
+            android:name="net.slidingmenu.tools.AdReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

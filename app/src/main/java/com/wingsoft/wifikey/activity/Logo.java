@@ -15,8 +15,9 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.enmu.YoumiAd;
 
-import net.youmi.android.AdManager;
-import net.youmi.android.spot.SpotManager;
+
+import net.slidingmenu.tools.AdManager;
+import net.slidingmenu.tools.st.SpotManager;
 
 import java.util.Timer;
 import java.util.TimerTask;

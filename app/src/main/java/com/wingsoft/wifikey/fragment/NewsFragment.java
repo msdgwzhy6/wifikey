@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,15 +36,11 @@ public class NewsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceBundle){
         View view = inflater.inflate(R.layout.fragment_news,container,false);
-
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         mListView = (ListView)view.findViewById(R.id.listview_news);
         progressDialog.setMessage("loading");
         progressDialog.show();
         final ArrayList<News> list = new ArrayList<News>();
-
-
-
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         JsonArrayRequest request = new JsonArrayRequest("http://m.bitauto.com/appapi/News/List.ashx/",
                 new Response.Listener<JSONArray>() {
@@ -61,20 +58,15 @@ public class NewsFragment extends Fragment{
                                 news.setmPublishTime(jsonObject.getString("PublishTime"));
                                 news.setmTitle(jsonObject.getString("Title"));
                                 list.add(news);
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 Log.i("volley","jsonerror");
                             }
-
                         }
                         Log.i("volley",list.size()+"");
                         NewsAdapter adapter = new NewsAdapter(getActivity(),list);
                         mListView.setAdapter(adapter);
-
                         progressDialog.cancel();
-
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -85,8 +77,12 @@ public class NewsFragment extends Fragment{
             }
         });
         queue.add(request);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(),list.get(i).getmTitle(),Toast.LENGTH_SHORT).show();
+            }
+        });
         return view;
-
     }
-
 }
