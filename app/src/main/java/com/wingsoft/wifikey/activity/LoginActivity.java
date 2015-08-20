@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.wingsoft.wifikey.Animation.ShakeAnimation;
 import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.enmu.LoginState;
 import com.wingsoft.wifikey.model.User;
@@ -49,6 +50,10 @@ public class LoginActivity extends ActionBarActivity {
                         if(msg.arg1 == LoginState.REG_FAILED){
                             Toast.makeText(LoginActivity.this,"用户已存在",Toast.LENGTH_SHORT).show();
                         }else {
+                            ShakeAnimation sa = new ShakeAnimation();
+                            sa.setDuration(1000);
+                            mEdit_Password.startAnimation(sa);
+                            mEdit_Username.startAnimation(sa);
                             Toast.makeText(LoginActivity.this, "用户名密码错误", Toast.LENGTH_SHORT).show();
                         }
                     }

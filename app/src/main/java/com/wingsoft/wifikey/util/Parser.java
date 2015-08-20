@@ -1,5 +1,7 @@
 package com.wingsoft.wifikey.util;
 
+import android.view.LayoutInflater;
+
 import com.wingsoft.wifikey.model.Wifi;
 
 import java.util.ArrayList;

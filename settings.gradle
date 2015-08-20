@@ -1,1 +1,3 @@
-include ":libraries:SlidingMenu", ':App'
+include ":libraries:SlidingMenu"
+include ':App'
+include ":libraries:sweet-alert-dialog:library"

@@ -13,6 +13,8 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/libraries" />
             <option value="$PROJECT_DIR$/libraries/SlidingMenu" />
+            <option value="$PROJECT_DIR$/libraries/sweet-alert-dialog" />
+            <option value="$PROJECT_DIR$/libraries/sweet-alert-dialog/library" />
           </set>
         </option>
       </GradleProjectSettings>

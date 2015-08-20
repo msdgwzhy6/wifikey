@@ -8,7 +8,7 @@ android {
         applicationId "com.wingsoft.wifikey"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 10
+        versionCode 11
         versionName "1.2"
     }
     buildTypes {
@@ -22,7 +22,9 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':libraries:SlidingMenu')
+    compile project(":libraries:sweet-alert-dialog:library")
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile files('/Users/wing/Documents/workspace/Wifikey/libs/volley.jar')
     compile files('/Users/wing/Documents/workspace/Wifikey/libs/YoumiSdk_v5.1.0_2015-07-06.jar')
+    compile files('/Users/wing/Documents/workspace/Wifikey/libs/jsoup-1.8.2.jar')
 }

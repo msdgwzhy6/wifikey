@@ -6,7 +6,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -21,10 +25,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.wingsoft.wifikey.R;
 import com.wingsoft.wifikey.enmu.ImportState;
 import com.wingsoft.wifikey.enmu.LoginState;
+import com.wingsoft.wifikey.enmu.Urls;
 import com.wingsoft.wifikey.enmu.YoumiAd;
 import com.wingsoft.wifikey.fragment.AboutFragment;
 import com.wingsoft.wifikey.fragment.HelpFragment;
@@ -33,6 +43,7 @@ import com.wingsoft.wifikey.fragment.WifiFragment;
 import com.wingsoft.wifikey.model.User;
 import com.wingsoft.wifikey.model.Wifi;
 import com.wingsoft.wifikey.thread.ImportThread;
+import com.wingsoft.wifikey.util.DownLoadManager;
 import com.wingsoft.wifikey.util.ImportUtils;
 
 import android.os.Handler;
@@ -40,16 +51,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.slidingmenu.tools.AdManager;
-import net.slidingmenu.tools.br.AdSize;
-import net.slidingmenu.tools.br.AdView;
-import net.slidingmenu.tools.st.SpotManager;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Main extends ActionBarActivity implements View.OnClickListener {
+    private static final int DOWNLOAD_ERROR = 0x2142 ;
     private long mExitTime = 0;
     private FragmentManager mFragmentManager;
     private LinearLayout mFragmentLayout;
     private FragmentTransaction mTransaction;
+    private boolean mIsNewVersion = true;
     private HelpFragment mHelpFragment = new HelpFragment();
     private WifiFragment mFragment_Wifi = new WifiFragment();
     private WifiFragment mFragment_Wifi2 = new WifiFragment();
@@ -67,26 +82,12 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
             switch (msg.what) {
                 case ImportState.IMPORT_NOW:
                     final Wifi wifi = (Wifi) msg.obj;
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Main.this);
 
-                    View view = LayoutInflater.from(Main.this).inflate(R.layout.dialog_wifinow, null);
-                    builder.setView(view);
-                    final AlertDialog dialog = builder.create();
-
-                    Button confirmButton = (Button) view.findViewById(R.id.button_confirm);
-                    Button shareButton = (Button) view.findViewById(R.id.button_share);
-                    TextView tv = (TextView)view.findViewById(R.id.text_wifinow);
-                    tv.setText("当前密码："+wifi.getKey());
-                    confirmButton.setOnClickListener(new View.OnClickListener() {
+                    new SweetAlertDialog(Main.this).setTitleText("wifi信息")
+                            .setContentText("当前密码:" + wifi.getKey()).setCancelText("确认")
+                    .setConfirmText("分享给好友").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
-                        public void onClick(View view) {
-                            dialog.cancel();
-                            return;
-                        }
-                    });
-                    shareButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
 
                             Intent intent = new Intent(Intent.ACTION_SEND);
                             intent.setType("text/plain");
@@ -96,20 +97,45 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                             startActivity(Intent.createChooser(intent, "请选择"));
 
                         }
-                    });
-
-                    dialog.show();
+                    }).show();
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(Main.this);
+//
+//                    View view = LayoutInflater.from(Main.this).inflate(R.layout.dialog_wifinow, null);
+//                    builder.setView(view);
+//                    final AlertDialog dialog = builder.create();
+//
+//                    Button confirmButton = (Button) view.findViewById(R.id.button_confirm);
+//                    Button shareButton = (Button) view.findViewById(R.id.button_share);
+//                    TextView tv = (TextView) view.findViewById(R.id.text_wifinow);
+//                    tv.setText("当前密码：" + wifi.getKey());
+//                    confirmButton.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            dialog.cancel();
+//                            return;
+//                        }
+//                    });
+//                    shareButton.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//
+//                        }
+//                    });
+//
+//                    dialog.show();
 
                     break;
                 case ImportState.IMPORT_ERROR:
                     Toast.makeText(Main.this, "导入失败,请检查root权限", Toast.LENGTH_SHORT).show();
                 case YoumiAd.ISAD:
-                    AdView adView = new AdView(Main.this, AdSize.FIT_SCREEN);
-// 获取要嵌入广告条的布局
-                    LinearLayout adLayout=(LinearLayout)findViewById(R.id.adLayout);
-// 将广告条加入到布局中
-                    adLayout.addView(adView);
-                    isad = true;
+//
+//                    LinearLayout adLayout=(LinearLayout)findViewById(R.id.adLayout);
+//// 将广告条加入到布局中
+//                    adLayout.addView(adView);
+//                    isad = true;
+                    break;
+                case DOWNLOAD_ERROR:
+                    Toast.makeText(Main.this, "下载失败", Toast.LENGTH_SHORT).show();
                     break;
             }
 
@@ -121,26 +147,52 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Urls.UPDATEURL,null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    int version = jsonObject.getInt("versioncode");
+                    String url = jsonObject.getString("url");
+                    if(version > getPackageManager().getPackageInfo(getPackageName(), 0).versionCode){
+                       showUpdataDialog(url);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(Main.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                } catch (PackageManager.NameNotFoundException e) {
+                    Toast.makeText(Main.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Toast.makeText(Main.this, "failed", Toast.LENGTH_SHORT).show();
+                        Log.i("wing","Main----->update failed");
+                    }
+                });
+        queue.add(request);
         mFragmentLayout = (LinearLayout) findViewById(R.id.linear);
         changeFragment(mFragment_Wifi);
         mButtonWifi = (ImageButton) findViewById(R.id.button_wifi);
         mButtonNews = (ImageButton) findViewById(R.id.button_news);
         mButtonWifi.setOnClickListener(this);
         mButtonNews.setOnClickListener(this);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String value = AdManager.getInstance(Main.this).syncGetOnlineConfig("IsAd", "what");
-                if(value.equals("true")){
-                    Message m = _handler.obtainMessage();
-                    m.what = YoumiAd.ISAD;
-                    _handler.sendMessage(m);
-                    Log.i("value",value);
-
-                }
-            }
-        }).start();
-
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+////                String value = AdManager.getInstance(Main.this).syncGetOnlineConfig("IsAd", "what");
+////                if(value.equals("true")){
+////                    Message m = _handler.obtainMessage();
+////                    m.what = YoumiAd.ISAD;
+////                    _handler.sendMessage(m);
+////                    Log.i("value",value);
+////
+////                }
+//            }
+//        }).start();
 
 
         initMenu();
@@ -276,9 +328,8 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     public void exit() {
         if ((System.currentTimeMillis() - mExitTime) > 2000) {
-            if(isad){
-                SpotManager.getInstance(this).showSpotAds(this);
-                Log.i("value","开启广告");
+            if (isad) {
+
             }
             Toast.makeText(getApplicationContext(), "再按一次退出程序",
                     Toast.LENGTH_SHORT).show();
@@ -309,8 +360,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     protected void onStop() {
 
-        // 如果不调用此方法，则按home键的时候会出现图标无法显示的情况。
-        SpotManager.getInstance(this).onStop();
+
         super.onStop();
     }
 
@@ -318,7 +368,61 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
     protected void onDestroy() {
 
-        SpotManager.getInstance(this).onDestroy();
         super.onDestroy();
+    }
+    protected void downloadNewAPK(final String url){
+        final ProgressDialog pd;
+        pd = new ProgressDialog(this);
+
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.setMessage("正在更新..");
+        pd.setCancelable(false);
+        pd.show();
+
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    File file = DownLoadManager.getFileFromServer(url, pd);
+                    sleep(3000);
+                    installApk(file);
+                    pd.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Message msg = _handler.obtainMessage();
+                    msg.what = DOWNLOAD_ERROR;
+                    _handler.sendMessage(msg);
+                }
+
+            }
+        }.start();
+    }
+
+    private void installApk(File file) {
+        Intent intent = new Intent();
+        //执行动作
+        intent.setAction(Intent.ACTION_VIEW);
+        //执行的数据类型
+        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        startActivity(intent);
+    }
+
+    protected void showUpdataDialog(final String url) {
+        mIsNewVersion = false;
+        SweetAlertDialog dialog =
+                new SweetAlertDialog(this).setTitleText("有新版本").setContentText("检查到新版本!是否更新").setConfirmText("确认")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        downloadNewAPK(url);
+                    }
+                }).setCancelText("取消").setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        finish();
+                    }
+                });
+        dialog.setCancelable(false);
+        dialog.show();
     }
 }
