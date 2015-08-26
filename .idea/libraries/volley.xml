@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="volley">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libs/volley.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Wifikey/libs/volley.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

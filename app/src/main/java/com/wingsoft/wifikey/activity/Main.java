@@ -98,31 +98,6 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
 
                         }
                     }).show();
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(Main.this);
-//
-//                    View view = LayoutInflater.from(Main.this).inflate(R.layout.dialog_wifinow, null);
-//                    builder.setView(view);
-//                    final AlertDialog dialog = builder.create();
-//
-//                    Button confirmButton = (Button) view.findViewById(R.id.button_confirm);
-//                    Button shareButton = (Button) view.findViewById(R.id.button_share);
-//                    TextView tv = (TextView) view.findViewById(R.id.text_wifinow);
-//                    tv.setText("当前密码：" + wifi.getKey());
-//                    confirmButton.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            dialog.cancel();
-//                            return;
-//                        }
-//                    });
-//                    shareButton.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//
-//                        }
-//                    });
-//
-//                    dialog.show();
 
                     break;
                 case ImportState.IMPORT_ERROR:
@@ -220,11 +195,7 @@ public class Main extends ActionBarActivity implements View.OnClickListener {
                 break;
 
             case R.id.button_news:
-                mButtonNews.setImageResource(R.drawable.news_checked);
-                mButtonWifi.setImageResource(R.drawable.wifi_unchecked);
-//               changeFragment(mFragment_News);
-                Intent intent = new Intent(Main.this, LoginActivity.class);
-                startActivityForResult(intent, LoginState.RESULT);
+                Toast.makeText(Main.this, "暂未开放", Toast.LENGTH_SHORT).show();
                 break;
         }
 

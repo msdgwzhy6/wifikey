@@ -37,10 +37,6 @@
             android:label="wifi密码读取器" >
         </activity>
         <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login" >
-        </activity>
-        <activity
             android:name=".activity.NewsActivity"
             android:label="@string/title_activity_news" >
         </activity>
